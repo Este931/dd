@@ -10,7 +10,7 @@
         }
       },
       "name": "Extract from File",
-      "type": "n8n-nodes-base.file",
+      "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
       "position": [300, 400]
     },
@@ -33,17 +33,19 @@
     },
     {
       "parameters": {
-        "fields": {
-          "message": (
-            "\uD83D\uDCC5 *Planning des transports du {{$now.format('YYYY-MM-DD')}}* \uD83D\uDE9B\n\n"
-            "\uD83D\uDCCD *Chargements pr\u00e9vus :*\n"
-            "{{ $json[\"Client\"] || \"Client inconnu\" }} - {{ $json[\"Ville Chargement\"] || \"Lieu inconnu\" }}\n"
-            "\uD83D\uDCC6 Date : {{ $json[\"Date Chargement\"] || \"Date non d\u00e9finie\" }} \u00e0 {{ $json[\"Heure Chargement\"] || \"Heure non d\u00e9finie\" }}\n\n"
-            "\uD83D\uDCE6 *Livraisons pr\u00e9vues :*\n"
-            "{{ $json[\"Client\"] || \"Client inconnu\" }} - {{ $json[\"Ville Livraison\"] || \"Lieu inconnu\" }}\n"
-            "\u2705 \uD83D\uDCC6 Date : {{ $json[\"Date Livraison\"] || \"Date non d\u00e9finie\" }} \u00e0 {{ $json[\"Heure Livraison\"] || \"Heure non d\u00e9finie\" }}"
-          )
-        }
+        "fields": [
+          {
+            "name": "message",
+            "type": "string",
+            "value": "\uD83D\uDCC5 *Planning des transports du {{$now.format('YYYY-MM-DD')}}* \uD83D\uDE9B\n\n"
+                     "\uD83D\uDCCD *Chargements pr\u00e9vus :*\n"
+                     "{{ $json[\"Client\"] || \"Client inconnu\" }} - {{ $json[\"Ville Chargement\"] || \"Lieu inconnu\" }}\n"
+                     "\uD83D\uDCC6 Date : {{ $json[\"Date Chargement\"] || \"Date non d\u00e9finie\" }} \u00e0 {{ $json[\"Heure Chargement\"] || \"Heure non d\u00e9finie\" }}\n\n"
+                     "\uD83D\uDCE6 *Livraisons pr\u00e9vues :*\n"
+                     "{{ $json[\"Client\"] || \"Client inconnu\" }} - {{ $json[\"Ville Livraison\"] || \"Lieu inconnu\" }}\n"
+                     "\u2705 \uD83D\uDCC6 Date : {{ $json[\"Date Livraison\"] || \"Date non d\u00e9finie\" }} \u00e0 {{ $json[\"Heure Livraison\"] || \"Heure non d\u00e9finie\" }}"
+          }
+        ]
       },
       "name": "Edit Fields",
       "type": "n8n-nodes-base.set",
@@ -101,4 +103,5 @@
     }
   }
 }
+
 
