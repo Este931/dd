@@ -1,0 +1,103 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "extractFromCSV",
+        "options": {
+          "delimiter": ";",
+          "headerRow": true,
+          "excludeBOM": true
+        }
+      },
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.file",
+      "typeVersion": 1,
+      "position": [300, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "all": [
+            {
+              "value1": "={{$json[\"Date Chargement\"]}}",
+              "operation": "equal",
+              "value2": "={{$now.format('YYYY-MM-DD')}}"
+            }
+          ]
+        }
+      },
+      "name": "Filter Today's Transports",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [500, 400]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "message": (
+            "\uD83D\uDCC5 *Planning des transports du {{$now.format('YYYY-MM-DD')}}* \uD83D\uDE9B\n\n"
+            "\uD83D\uDCCD *Chargements pr\u00e9vus :*\n"
+            "{{ $json[\"Client\"] || \"Client inconnu\" }} - {{ $json[\"Ville Chargement\"] || \"Lieu inconnu\" }}\n"
+            "\uD83D\uDCC6 Date : {{ $json[\"Date Chargement\"] || \"Date non d\u00e9finie\" }} \u00e0 {{ $json[\"Heure Chargement\"] || \"Heure non d\u00e9finie\" }}\n\n"
+            "\uD83D\uDCE6 *Livraisons pr\u00e9vues :*\n"
+            "{{ $json[\"Client\"] || \"Client inconnu\" }} - {{ $json[\"Ville Livraison\"] || \"Lieu inconnu\" }}\n"
+            "\u2705 \uD83D\uDCC6 Date : {{ $json[\"Date Livraison\"] || \"Date non d\u00e9finie\" }} \u00e0 {{ $json[\"Heure Livraison\"] || \"Heure non d\u00e9finie\" }}"
+          )
+        }
+      },
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [700, 400]
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "fromEmail": "ton-email@gmail.com",
+        "toEmail": "destinataire@example.com",
+        "subject": "\uD83D\uDE9B Planning des transports du {{$now.format('YYYY-MM-DD')}}",
+        "content": "={{$json[\"message\"]}}",
+        "options": {}
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [900, 400]
+    }
+  ],
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Filter Today's Transports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Today's Transports": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
